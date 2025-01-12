@@ -10,8 +10,8 @@
   <style>
     body {
       font-family: 'Roboto', Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+      background-color: #121212;
+      color: #e0e0e0;
       margin: 0;
       padding: 0;
       display: flex;
@@ -32,24 +32,36 @@
     button {
       padding: 10px 15px;
       margin: 0 5px;
-      background-color: #007BFF;
-      color: white;
+      background-color: #1e88e5;
+      color: #ffffff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       font-family: 'Roboto', Arial, sans-serif;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #1565c0;
     }
 
     select {
       padding: 10px;
       margin-left: 10px;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid #424242;
+      background-color: #2e2e2e;
+      color: #e0e0e0;
       font-family: 'Roboto', Arial, sans-serif;
+    }
+
+    select option {
+      background-color: #2e2e2e;
+      color: #e0e0e0;
+    }
+
+    h1, p {
+      text-align: center;
     }
 
     #loading-screen {
@@ -58,8 +70,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #e0e0e0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -72,7 +84,7 @@
 </head>
 
 <body>
-  <div id="loading-screen">Loading data... (api data might take 1 minute if unloaded for over 15 minutes)</div>
+  <div id="loading-screen">Loading data... (API data might take 1 minute if unloaded for over 15 minutes)</div>
   <h1>Temperature Chart</h1>
   <p>In beta, there are some inaccuracies in the data.</p>
   <div class="controls">
@@ -107,20 +119,45 @@
     function initializeChart() {
       chart = Highcharts.chart('chart-container', {
         chart: {
-          type: 'line'
+          type: 'line',
+          backgroundColor: '#121212'
         },
         title: {
-          text: 'Temperature Over Time'
+          text: 'Temperature Over Time',
+          style: {
+            color: '#e0e0e0'
+          }
         },
         xAxis: {
           type: 'datetime',
           title: {
-            text: 'Time'
+            text: 'Time',
+            style: {
+              color: '#e0e0e0'
+            }
+          },
+          labels: {
+            style: {
+              color: '#e0e0e0'
+            }
           }
         },
         yAxis: {
           title: {
-            text: 'Temperature'
+            text: 'Temperature',
+            style: {
+              color: '#e0e0e0'
+            }
+          },
+          labels: {
+            style: {
+              color: '#e0e0e0'
+            }
+          }
+        },
+        legend: {
+          itemStyle: {
+            color: '#e0e0e0'
           }
         },
         credits: {
@@ -128,7 +165,8 @@
         },
         series: [{
           name: 'Temperature',
-          data: []
+          data: [],
+          color: '#1e88e5'
         }]
       });
     }
