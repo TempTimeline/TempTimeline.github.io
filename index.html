@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Chart</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #chart-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .controls {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    select {
+      padding: 10px;
+      margin-left: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Temperature Chart</h1>
+  <div class="controls">
+    <button onclick="fetchData('96')">Last 24 Hours</button>
+    <button onclick="fetchData('')">Since Started</button>
+    <label>
+      Unit:
+      <select id="unit" onchange="updateChart()">
+        <option value="temp_c">Celsius (°C)</option>
+        <option value="temp_f">Fahrenheit (°F)</option>
+      </select>
+    </label>
+  </div>
+  <div id="chart-container"></div>
+
+  <script>
+    let chart;
+    let temperatureData = [];
+
+    // Initialize Highcharts
+    function initializeChart() {
+      chart = Highcharts.chart('chart-container', {
+        chart: {
+          type: 'line'
+        },
+        title: {
+          text: 'Temperature Over Time'
+        },
+        xAxis: {
+          type: 'datetime',
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+          title: {
+            text: 'Temperature'
+          }
+        },
+        series: [{
+          name: 'Temperature',
+          data: []
+        }]
+      });
+    }
+
+    // Fetch data from API
+    async function fetchData(limit) {
+      try {
+        const url = `https://np4023-weatherstats-api.onrender.com/json?limit=${limit}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Process data: Sort by time, remove duplicates
+        const seenTimes = new Set();
+        temperatureData = data
+          .map(entry => ({
+            time: new Date(entry.current.last_updated).getTime(),
+            temp_c: entry.current.temp_c,
+            temp_f: entry.current.temp_f
+          }))
+          .sort((a, b) => a.time - b.time)
+          .filter(entry => {
+            if (seenTimes.has(entry.time)) return false;
+            seenTimes.add(entry.time);
+            return true;
+          });
+
+        updateChart();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    // Update the chart with the selected unit
+    function updateChart() {
+      const unit = document.getElementById('unit').value;
+      const seriesData = temperatureData.map(entry => [entry.time, entry[unit]]);
+      chart.series[0].setData(seriesData);
+      chart.series[0].update({ name: `Temperature (${unit === 'temp_c' ? '°C' : '°F'})` });
+    }
+
+    // Initialize the chart on page load
+    window.onload = () => {
+      initializeChart();
+      fetchData('96'); // Default to "Last 24 Hours"
+    };
+  </script>
+</body>
+</html>
