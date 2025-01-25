@@ -90,7 +90,7 @@
     <p>In beta, there are some inaccuracies in the data.</p>
     <div class="controls">
         <button onclick="fetchData('24h')">Next 24H</button>
-        <button onclick="fetchData('7d')">Next 15 Days</button>
+        <button onclick="fetchData('15d')">Next 15 Days</button>
         <select id="temp-unit" onchange="updateChart()">
             <option value="C">Celsius (°C)</option>
             <option value="F">Fahrenheit (°F)</option>
@@ -183,7 +183,7 @@
                         entry.datetimeEpoch * 1000,
                         convertTemperature(entry.temp)
                     ]);
-                } else if (range === '7d') {
+                } else if (range === '15d') {
                     data = apiResponse.days.flatMap(day =>
                         day.hours.map(entry => [
                             entry.datetimeEpoch * 1000,
